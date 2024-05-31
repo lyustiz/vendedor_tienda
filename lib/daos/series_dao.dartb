@@ -1,0 +1,42 @@
+import 'package:vendedor_tienda/utils/db/db_manager.dart';
+import 'package:drift/drift.dart';
+import 'package:vendedor_tienda/models/series.dart'
+    hide $SeriesTable, Serie, AppDatabase, SeriesCompanion;
+
+part 'series_dao.g.dart';
+
+@DriftAccessor(tables: [Series])
+class SeriesDao extends DatabaseAccessor<AppDatabase> with _$SeriesDaoMixin {
+  SeriesDao(AppDatabase db) : super(db);
+
+  Future<Serie> selectSerie(Serie serie) async {
+    return (select(series)..where((t) => t.idSerie.equals(serie.idSerie)))
+        .getSingle();
+  }
+
+  Stream<Serie> watchSerie(Serie serie) {
+    return (select(series)..where((t) => t.idSerie.equals(serie.idSerie)))
+        .watchSingle();
+  }
+
+  Future<List<Serie>> allSeries() async {
+    return select(series).get();
+  }
+
+  Stream<List<Serie>> watchSeries() {
+    return select(series).watch();
+  }
+
+  Future<int> insertSerie(Serie serie) async {
+    return into(series).insert(
+        SeriesCompanion.insert(nombre: serie.nombre, simbolo: serie.simbolo));
+  }
+
+  Future<bool> upateSerie(Serie serie) async {
+    return update(series).replace(serie);
+  }
+
+  Future<int> deleteSerie(Serie serie) async {
+    return delete(series).delete(serie);
+  }
+}

@@ -1,0 +1,98 @@
+import 'package:vendedor_tienda/utils/db/db_manager.dart';
+import 'package:drift/drift.dart';
+import 'package:vendedor_tienda/models/clientes.dart'
+    hide $ClientesTable, Cliente, AppDatabase, ClientesCompanion;
+
+part 'clientes_dao.g.dart';
+
+@DriftAccessor(tables: [Clientes])
+class ClientesDao extends DatabaseAccessor<AppDatabase>
+    with _$ClientesDaoMixin {
+  ClientesDao(AppDatabase db) : super(db);
+
+  Future<Cliente> selectCliente(int idCliente) async {
+    return (select(clientes)..where((t) => t.idCliente.equals(idCliente)))
+        .getSingle();
+  }
+
+  Future<List<Cliente>> allClientes(
+      {String estado = '', orden: 'nombre'}) async {
+    estado = (estado.isEmpty) ? '' : estado;
+
+    return (select(clientes)
+          ..where((t) => t.estado.isNotNull())
+          ..orderBy([
+            (t) => OrderingTerm(
+                expression: (orden == 'nombre') ? t.nombre : t.idCliente,
+                mode:
+                    (orden == 'nombre') ? OrderingMode.asc : OrderingMode.desc),
+          ]))
+        .get();
+  }
+
+  Future<List<Cliente>> allClientesActualizados() {
+    return (select(clientes)..where((t) => t.actualizado.isNotNull())).get();
+  }
+
+  Future<bool> upateCliente(Cliente cliente) async {
+    bool updated = await update(clientes).replace(cliente);
+    return updated;
+  }
+
+  Future<Cliente> insertCliente(Cliente cliente, int idVendedor) async {
+    Cliente? documentoExiste = await (select(clientes)
+          ..where((t) => t.documento.equals(cliente.documento)))
+        .getSingleOrNull();
+
+    if (documentoExiste is Cliente) {
+      return documentoExiste.copyWith(idCliente: 0);
+    }
+
+    var insCliente = ClientesCompanion.insert(
+        codigo: '0',
+        nombre: cliente.nombre,
+        documento: Value(cliente.documento),
+        celular: cliente.celular,
+        estado: cliente.estado,
+        barrio: Value(cliente.barrio),
+        correo: Value(cliente.correo),
+        actualizado: Value(DateTime.now()));
+
+    Cliente newCliente = await into(clientes).insertReturning(insCliente);
+
+    Cliente finalCliente = newCliente.copyWith(
+        codigo: '${idVendedor.toString()}${newCliente.idCliente.toString()}');
+    await update(clientes).replace(finalCliente);
+    return finalCliente;
+  }
+
+  Future<int> upsertCliente(Cliente cliente) async {
+    return into(clientes).insertOnConflictUpdate(cliente);
+  }
+
+  Future<int> deleteCliente(Cliente cliente) async {
+    int deleted = await delete(clientes).delete(cliente);
+    return deleted;
+  }
+
+  Future<int> clearClientesActualizados() async {
+    return (update(clientes)..where((t) => t.actualizado.isNotNull()))
+        .write(ClientesCompanion(
+      actualizado: Value(null),
+    ));
+  }
+
+  Future<List<Cliente>> searchCliente(String search,
+      {String estado = ''}) async {
+    search = (search.isEmpty) ? '' : search;
+    estado = (estado.isEmpty) ? '' : estado;
+    return (select(clientes)
+          ..where((t) =>
+              (t.nombre.like('%$search%') |
+                  t.documento.like('%$search%') |
+                  t.celular.like('%$search%')) &
+              t.estado.like('%$estado%'))
+          ..orderBy([(t) => OrderingTerm(expression: t.nombre)]))
+        .get();
+  }
+}

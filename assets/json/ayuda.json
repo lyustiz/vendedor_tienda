@@ -1,0 +1,201 @@
+[
+    {
+        "pantalla": "inicio",
+        "texto": "Selecciona el tipo de accion para el sistema",
+        "items": [
+            {
+                "icono": "attach_money",
+                "tipo": "info",
+                "titulo": "Venta",
+                "texto": "Selecciona este item para realizar la venta de cartones y modulos de los juegos activos."
+            },
+            {
+                "icono": "search",
+                "tipo": "info",
+                "titulo": "Consulta",
+                "texto": "Selecciona este item para consulta el estado de cartones y modulos de los juegos cerrados o concluidos."
+            },
+            {
+                "icono": "sync",
+                "tipo": "info",
+                "titulo": "Sincronizacion",
+                "texto": "Pantalla que permite sincronizar los datos de la APP con la Sede."
+            },
+            {
+                "icono": "warning",
+                "tipo": "warning",
+                "titulo": "Importante",
+                "texto": "Debe coordinar la asignacion de cartones y modulos con su sede asignada y realizar una sincronizacion de los datos antes del uso de la aplicacion"
+            }
+        ]
+    },
+    {
+        "pantalla": "juegos",
+        "texto": "Lista solo los juegos activos/cerrados que se le han asignado al vendedor",
+        "items": [
+            {
+                "icono": "power_settings_new_sharp",
+                "tipo": "success",
+                "titulo": "Juegos Activos",
+                "texto": "Permite la venta de cartones y modulos."
+            },
+            {
+                "icono": "power_settings_new_sharp",
+                "tipo": "error",
+                "titulo": "Juegos Terminados",
+                "texto": "Permite la consulta de cartones y modulos."
+            }
+         
+        ]
+    },
+    {
+        "pantalla": "juego",
+        "texto": "Detalles del carton seleccionado y que permite la venta de cartones y modulos del mismo",
+        "items": [
+            {
+                "icono": "bar_chart_rounded",
+                "tipo": "info",
+                "titulo": "Estadisticas",
+                "texto": "Informacion de Cartones y Modulos asignados y vendidos, asi como el monto recaudado por la venta."
+            },
+            {
+                "icono": "post_add",
+                "tipo": "info",
+                "titulo": "Solicitudes",
+                "texto": "Permite solicitar Cartones y Modulos adicionales para la venta."
+            },
+            {
+                "icono": "paid",
+                "tipo": "success",
+                "titulo": "Cartones Vendido",
+                "texto": "Lista de los cartones vendidos con el nombre del cliente y estado de sincronizacion."
+            },
+            {
+                "icono": "lock_open",
+                "tipo": "warning",
+                "titulo": "Entrega Cartones",
+                "texto": "Entregar cartones, esta accion bloquea la venta de cartones/modulos "
+            },
+            {
+                "icono": "lock",
+                "tipo": "error",
+                "titulo": "Cartones Entregados",
+                "texto": "Ya se ha confirmado la entrega de cartones"
+            },
+            {
+                "icono": "table_view_rounded",
+                "tipo": "info",
+                "titulo": "Venta Cartones",
+                "texto": "Lista los cartones vendidos o disponibles del juego seleccionado"
+            },
+            {
+                "icono": "view_module_rounded",
+                "tipo": "info",
+                "titulo": "Venta Modulos",
+                "texto": "Lista los modulos vendidos o disponibles del juego seleccionado"
+            },
+            {
+                "icono": "add_shopping_cart_rounded",
+                "tipo": "info",
+                "titulo": "Venta Promociones",
+                "texto": "Permite la venta de cartones segun las promociones del juego (por implementar)."
+            }
+        ]
+    },
+    {
+        "pantalla": "cartones",
+        "texto": "Lista de los cartones disponibles/vendidos asignados al vendedor",
+        "items": [
+            {
+                "icono": "attach_money_rounded",
+                "tipo": "success",
+                "titulo": "Venta",
+                "texto": "Presione para seleccionar el carton para la venta, igualmente al dar click diractemente al carton"
+            },
+            {
+                "icono": "check",
+                "tipo": "blue",
+                "titulo": "Carton Seleccionado",
+                "texto": "indica que el carton ha sido seleccionado para la venta, presione nuevamente para quitarlo de la seleccion"
+            },
+            {
+                "icono": "zero",
+                "tipo": "grey",
+                "titulo": "Sin cartones",
+                "texto": "Indica que no se ha seleccionado cartones para la venta"
+            },
+            {
+                "icono": "two",
+                "tipo": "success",
+                "titulo": "Cartones Seleccionados",
+                "texto": "Indica el nro de cartones seleccionados, da click en el para iniciar la venta "
+            },
+            {
+                "icono": "attach_money_rounded",
+                "tipo": "purple",
+                "titulo": "Cartones Vendidos",
+                "texto": "Filtro para mostrar solamente los cartones vendidos"
+            },
+            {
+                "icono": "reply",
+                "tipo": "error",
+                "titulo": "Devolucion",
+                "texto": "Presione para realizar la devolucion el carton seleccionado"
+            },
+            {
+                "icono": "lock",
+                "tipo": "warning",
+                "titulo": "Vendido sin Devolucion",
+                "texto": "El carton ya ha sido vendido y el juego no permite devolucion"
+            },
+            {
+                "icono": "lock",
+                "tipo": "error",
+                "titulo": "Bloqueado",
+                "texto": "Se ha bloqueado la venta por entrega de cartones, accion que cierra el juego para el vendedor"
+            },
+            {
+                "icono": "search",
+                "tipo": "info",
+                "titulo": "Busqueda",
+                "texto": "buscar carton por numero"
+            }
+        ]
+    },
+    {
+        "pantalla": "carton",
+        "texto": "Detalles del carton seleccionado y asignacion del Cliente para la venta",
+        "items": [
+            {
+                "icono": "person_outlined",
+                "tipo": "info",
+                "titulo": "Seleccion de Cliente",
+                "texto": "Seleccione el cliente cargado o cree uno nuevo para la venta del carton"
+            },
+            {
+                "icono": "check",
+                "tipo": "success",
+                "titulo": "Vender",
+                "texto": "Despues de seleccionar el cliente dar clic en vender"
+            }
+        ]
+    },
+    {
+        "pantalla": "sincronizar",
+        "texto": "Permite intercambio de datos entre la APP y el servidor",
+        "items": [
+            {
+                "icono": "change_circle_outlined",
+                "tipo": "info",
+                "titulo": "Por Sincronizar",
+                "texto": "Estado pendiente por sincronizacion"
+            },
+            {
+                "icono": "check",
+                "tipo": "success",
+                "titulo": "Sincronizado",
+                "texto": "Item sincronizado"
+            }
+        ]
+    }
+]

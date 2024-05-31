@@ -1,0 +1,50 @@
+import 'package:vendedor_tienda/utils/db/db_manager.dart';
+import 'package:drift/drift.dart';
+import 'package:vendedor_tienda/models/solicitud.dart'
+    hide $SolicitudesTable, Solicitud, AppDatabase, SolicitudesCompanion;
+
+part 'solicitud_dao.g.dart';
+
+@DriftAccessor(tables: [Solicitudes])
+class SolicitudDao extends DatabaseAccessor<AppDatabase>
+    with _$SolicitudDaoMixin {
+  SolicitudDao(AppDatabase db) : super(db);
+
+  Future<Solicitud> selectSolicitud(Solicitud solicitud) async {
+    return (select(solicitudes)
+          ..where((t) => t.idSolicitud.equals(solicitud.idSolicitud)))
+        .getSingle();
+  }
+
+  Future<List<Solicitud>> allSolicitudes(
+      int idProgramacionJuego, String estado) async {
+    estado = (['A', 'P'].contains(estado)) ? estado : '%';
+
+    return (select(solicitudes)
+          ..where((t) => t.idProgramacionJuego.equals(idProgramacionJuego))
+          ..where((t) => t.estado.like('$estado'))
+          ..orderBy(
+            ([
+              (t) => OrderingTerm(
+                  expression: t.idSolicitud, mode: OrderingMode.desc),
+            ]),
+          ))
+        .get();
+  }
+
+  Future<bool> upateSolicitud(Solicitud solicitud) async {
+    return update(solicitudes).replace(solicitud);
+  }
+
+  Future<int> insertSolicitud(Solicitud solicitud) async {
+    return into(solicitudes).insert(solicitud);
+  }
+
+  Future<int> upsertSolicitud(Solicitud solicitud) async {
+    return into(solicitudes).insertOnConflictUpdate(solicitud);
+  }
+
+  Future<int> deleteSolicitud(Solicitud solicitud) async {
+    return delete(solicitudes).delete(solicitud);
+  }
+}

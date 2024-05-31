@@ -1,0 +1,238 @@
+import 'package:vendedor_tienda/providers/DTO/carton_DTO.dart';
+import 'package:vendedor_tienda/utils/db/db_manager.dart';
+import 'package:drift/drift.dart';
+import 'package:vendedor_tienda/models/cartones.dart'
+    hide $CartonesTable, Carton, AppDatabase, CartonesCompanion;
+
+part 'cartones_dao.g.dart';
+
+@DriftAccessor(tables: [Cartones])
+class CartonesDao extends DatabaseAccessor<AppDatabase>
+    with _$CartonesDaoMixin {
+  CartonesDao(AppDatabase db) : super(db);
+
+  Future<Carton> selectCarton(Carton carton) async {
+    return (select(cartones)..where((t) => t.idCarton.equals(carton.idCarton)))
+        .getSingle();
+  }
+
+  Future<List<Carton>> allCartones(
+      int idProgramacionJuego, String estado) async {
+    estado = (['A', 'V'].contains(estado)) ? estado : '%';
+
+    return (select(cartones)
+          ..where((t) => t.idProgramacionJuego.equals(idProgramacionJuego))
+          ..where((t) => t.estado.isNotNull())
+          ..where((t) => t.idModulo.isNull()))
+        .get();
+  }
+
+  Future<List<Carton>> allCartonesActualizados() {
+    return (select(cartones)..where((t) => t.actualizado.isNotNull())).get();
+  }
+
+  Future<bool> upateCarton(Carton carton) async {
+    bool updated = await update(cartones).replace(carton);
+    return updated;
+  }
+
+  Future<int> insertCarton(Carton carton) async {
+    int inserted = await into(cartones).insert(carton.copyWith(idCarton: null));
+    return inserted;
+  }
+
+  Future<int> deleteCarton(Carton carton) async {
+    int deleted = await delete(cartones).delete(carton);
+    return deleted;
+  }
+
+  Future<int> upsertCarton(Carton carton) async {
+    return into(cartones).insertOnConflictUpdate(carton);
+  }
+
+  Future deleteCartonesInactivos(List<int> idsCartonesActivos) async {
+    delete(cartones).where((t) => t.idCarton.isNotIn(idsCartonesActivos));
+  }
+
+  Future<int> clearCartonesActualizados() async {
+    return (update(cartones)..where((t) => t.actualizado.isNotNull()))
+        .write(CartonesCompanion(
+      actualizado: Value(null),
+    ));
+  }
+
+  Future<List<Carton>> searchCarton(
+      String search, int idProgramacionJuego, String estado) async {
+    search = (search.isEmpty) ? '' : search;
+
+    return customSelect(
+      '''SELECT * 
+      FROM cartones 
+      WHERE numero_serie LIKE ? 
+      AND id_programacion_juego = ?
+      AND estado  = ?
+      AND  id_modulo is NULL''',
+      variables: [
+        Variable('%$search%'),
+        Variable(idProgramacionJuego),
+        Variable('$estado')
+      ],
+      readsFrom: {cartones},
+    )
+        .get()
+        .then((rows) => rows.map((row) => Carton.fromData(row.data)).toList());
+  }
+
+  Future<List<Carton>> selectCartonesUpdated({String estado = ''}) async {
+    estado = (estado.isEmpty) ? '' : estado;
+
+    return (select(cartones)
+          ..where((t) => t.estado.isNotNull())
+          ..where((t) => t.actualizado.isNotNull()))
+        .get();
+  }
+
+  Future<int> upateAllModulosCarton(int idModulo, int idCliente) async {
+    int updated = await (update(cartones)
+          ..where((t) => t.idModulo.equals(idModulo)))
+        .write(CartonesCompanion(
+            estado: Value('V'),
+            idModulo: Value(idModulo),
+            idCliente: Value(idCliente),
+            actualizado: Value(DateTime.now())));
+
+    return updated;
+  }
+
+  Future<int> returnAllModulosCarton(int idModulo) async {
+    int updated = await (update(cartones)
+          ..where((t) => t.idModulo.equals(idModulo)))
+        .write(CartonesCompanion(
+            estado: Value('A'),
+            idModulo: Value(idModulo),
+            idCliente: Value(0),
+            actualizado: Value(DateTime.now())));
+
+    return updated;
+  }
+
+  Future<int> upateCartonesMultiples(
+      int idCliente, List<int> idCartones) async {
+    int updated = await (update(cartones)
+          ..where((t) => t.idCarton.isIn(idCartones)))
+        .write(CartonesCompanion(
+            estado: Value('V'),
+            idCliente: Value(idCliente),
+            actualizado: Value(DateTime.now())));
+    return updated;
+  }
+
+  Future<int> upateAllPromocionCarton(
+      int idPromocion, int idCliente, List<int> idCartones) async {
+    int updated = await (update(cartones)
+          ..where((t) => t.idCarton.isIn(idCartones)))
+        .write(CartonesCompanion(
+            estado: Value('V'),
+            idPromocion: Value(idPromocion),
+            idCliente: Value(idCliente),
+            actualizado: Value(DateTime.now())));
+
+    return updated;
+  }
+
+  Future<List<Modulo>> getAllModulosCarton(
+      int idProgramacionJuego, String estado) async {
+    estado = (['A', 'V'].contains(estado)) ? estado : '%';
+
+    List<CartonDTO> listCartones = [];
+    /* await (select(cartones)
+          ..where((t) => t.idProgramacionJuego.equals(idProgramacionJuego))
+          ..where((t) => t.estado.like('$estado'))
+          ..where((t) => t.idModulo.isNotNull()))
+        .get();*/
+
+    List<Modulo> modulos = [];
+    int? currentModulo = null;
+
+    listCartones.forEach((carton) {
+      if (currentModulo != carton.idModulo) {
+        modulos.add(Modulo(
+            idModulo: carton.idModulo!,
+            idProgramacionJuego: carton.idProgramacionJuego,
+            numeroModulo: carton.numeroModulo!,
+            estado: carton.estado,
+            cartones: []));
+        currentModulo = carton.idModulo;
+      }
+    });
+
+    int moduloIndex = 0;
+    for (final lmodulo in modulos) {
+      for (final CartonDTO lcarton in listCartones) {
+        if (lmodulo.idModulo == lcarton.idModulo) {
+          modulos[moduloIndex].cartones.add(lcarton);
+        }
+      }
+      moduloIndex++;
+    }
+
+    return modulos;
+  }
+
+  Future<Estadistica> getCartonEstadisticas(int idProgramacionJuego) async {
+    var estadisticas = await customSelect(
+      '''  SELECT valor_modulo, 
+                  valor_carton,
+            (SELECT COUNT(1) 
+              FROM cartones 
+              WHERE id_programacion_juego = j.id_programacion_juego 
+                AND id_modulo IS NULL 
+                AND id_promocion IS NULL 
+                AND estado ='V') AS venta_cartones,
+            (SELECT COUNT(1) 
+              FROM cartones 
+              WHERE id_programacion_juego = j.id_programacion_juego 
+                AND id_modulo IS NULL 
+                AND id_promocion IS NOT NULL 
+                AND estado ='V') AS venta_promocion,
+            (SELECT COUNT(1) 
+               FROM cartones 
+              WHERE id_programacion_juego = j.id_programacion_juego 
+                AND id_modulo IS NULL 
+                AND id_promocion IS NULL) AS total_cartones,
+            (SELECT COUNT(DISTINCT id_modulo) 
+               FROM cartones WHERE id_programacion_juego = j.id_programacion_juego 
+                AND id_modulo IS NOT NULL 
+                AND id_promocion IS NULL 
+                AND estado ='V')  AS venta_modulo,
+            (SELECT COUNT(DISTINCT id_modulo) 
+               FROM cartones 
+              WHERE id_programacion_juego = j.id_programacion_juego 
+                AND id_modulo IS NOT NULL 
+                AND id_promocion IS NULL)  AS total_modulos
+            FROM juegos j where j.id_programacion_juego = ? ''',
+      variables: [Variable(idProgramacionJuego)],
+      readsFrom: {cartones},
+    ).getSingle().then((row) => row.data);
+
+    int valorCarton = (estadisticas['valor_carton'] ?? 0.0).toInt();
+    int valorModulo = (estadisticas['valor_modulo'] ?? 0.0).toInt();
+    int totalVentaCartones = estadisticas['venta_cartones'] * valorCarton;
+    int totalVentaModulos = estadisticas['venta_modulo'] * valorModulo;
+    int totalMontoVenta = totalVentaCartones + totalVentaModulos;
+
+    return Estadistica(
+      idProgramacionJuego: idProgramacionJuego,
+      valorCarton: valorCarton,
+      valorModulo: valorModulo,
+      ventaCartones: estadisticas['venta_cartones'],
+      totalCartones: estadisticas['total_cartones'],
+      totalVentaCartones: totalVentaCartones,
+      ventaModulos: estadisticas['venta_modulo'],
+      totalModulos: estadisticas['total_modulos'],
+      totalVentaModulos: totalVentaModulos,
+      ventaPromocion: estadisticas['venta_promocion'],
+      totalMontoVenta: totalMontoVenta,
+    );
+  }
+}

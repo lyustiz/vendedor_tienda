@@ -1,0 +1,26 @@
+[{
+"idCliente": 1,
+"nombre": "Luis Yustiz",
+"celular": "04129098862",
+"documento": "13479149",
+"barrio": "caracas",
+"estado": "A",
+"actualizado": "2019-11-17T12:51:49"
+},
+{
+"idCliente": 2,
+"nombre": "Jose Camacho",
+"celular": "01021234567",
+"documento": "16087829",
+"barrio": "cali",
+"estado": "A",
+"actualizado": "2019-11-17T12:51:49"
+},{
+"idCliente": 3,
+"nombre": "Carlor Hernandez",
+"celular": "22221234567",
+"documento": "4195948",
+"barrio": "barranquilla",
+"estado": "A",
+"actualizado": "2019-11-17T12:51:49"
+}]

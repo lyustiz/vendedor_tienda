@@ -1,0 +1,44 @@
+import 'package:vendedor_tienda/utils/db/db_manager.dart';
+import 'package:drift/drift.dart';
+import 'package:vendedor_tienda/models/cobros.dart'
+    hide AppDatabase, $CobrosTable, Cobro, CobrosCompanion;
+
+part 'cobros_dao.g.dart';
+
+@DriftAccessor(tables: [Cobros])
+class CobrosDao extends DatabaseAccessor<AppDatabase> with _$CobrosDaoMixin {
+  CobrosDao(AppDatabase db) : super(db);
+
+  Future<Cobro> selectCobro(int idProgramacionJuego) async {
+    return (select(cobros)
+          ..where((t) => t.idProgramacionJuego.equals(idProgramacionJuego)))
+        .getSingle();
+  }
+
+  Future<List<Cobro>> allCobrosActualizados() async {
+    return (select(cobros)..where((t) => t.actualizado.isNotNull())).get();
+  }
+
+  Future<int> clearCobrosActualizados() async {
+    return (update(cobros)..where((t) => t.actualizado.isNotNull()))
+        .write(CobrosCompanion(
+      actualizado: Value(null),
+    ));
+  }
+
+  Future<int> clearCobroActualizado(int idProgramacionJuego) async {
+    return (update(cobros)
+          ..where((t) => t.idProgramacionJuego.equals(idProgramacionJuego)))
+        .write(CobrosCompanion(
+      actualizado: Value(null),
+    ));
+  }
+
+  Future<int> insertCobro(Cobro cobro) async {
+    return into(cobros).insert(cobro);
+  }
+
+  Future<int> upsertCobro(Cobro cobro) async {
+    return into(cobros).insertOnConflictUpdate(cobro);
+  }
+}

@@ -1,0 +1,36 @@
+name: vendedor_tienda
+description: APP Vendedor - Tienda - Bingo JL.
+publish_to: 'none'
+
+version: 0.015.0
+
+environment:
+  sdk: ">=3.0.0 <=3.19.5"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  equatable: ^2.0.3
+  flutter_bloc: ^8.1.5
+  shared_preferences: ^2.1.0
+  path_provider: ^2.1.0
+  flutter_form_builder: ^9.2.1
+  form_builder_validators: ^9.1.0
+  intl: ^0.18.0
+  http: ^1.2.1
+  flutter_localizations:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^3.0.2
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/json/
+    - assets/ca/
