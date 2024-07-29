@@ -41,7 +41,8 @@ class VentaRepository {
     if (result.isSucess) {
       return resp.copyWith(ok: true, info: Estadistica.fromJson(result.data));
     } else {
-      return resp.copyWith(ok: false, message: result.data['mensaje']);
+      return resp.copyWith(
+          ok: false, message: result.data['mensaje'] ?? result.data['message']);
     }
   }
 }

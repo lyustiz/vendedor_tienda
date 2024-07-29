@@ -2,7 +2,7 @@ name: vendedor_tienda
 description: APP Vendedor - Tienda - Bingo JL.
 publish_to: 'none'
 
-version: 0.015.0
+version: 0.016.0
 
 environment:
   sdk: ">=3.0.0 <=3.19.5"

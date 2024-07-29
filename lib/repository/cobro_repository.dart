@@ -9,7 +9,6 @@ class CobroRepository {
   ResultApi result = ResultApi(isSucess: false);
   Respuesta respuesta = Respuesta(false, 'Error');
 
-  // **************************
   Future<Respuesta<Cobro>> selectCobroJuego(int idProgramacionJuego) async {
     var params = {"idProgramacionJuego": idProgramacionJuego};
     Respuesta<Cobro> respuesta = Respuesta<Cobro>(false, 'Error');

@@ -59,11 +59,13 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
                 focusNode: myFocusNode,
                 controller: textController,
                 keyboardType: TextInputType.number,
+                style: const TextStyle(color: Colors.amber),
                 decoration: const InputDecoration(
                   isDense: true,
                   border: InputBorder.none,
                   hintText: 'Codigo de Empresa',
                   suffixIcon: Icon(Icons.vpn_key),
+                  hintStyle: TextStyle(color: Colors.amber),
                   filled: true,
                 ),
               ),
@@ -79,8 +81,11 @@ class _ConfiguracionScreenState extends State<ConfiguracionScreen> {
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.sync_alt),
-                          Text('Cambiar'),
+                          Icon(Icons.sync_alt, color: Colors.white),
+                          Text(
+                            ' Cambiar',
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ],
                       ),
                     ),

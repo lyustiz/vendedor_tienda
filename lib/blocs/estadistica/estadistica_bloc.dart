@@ -23,6 +23,7 @@ class EstadisticaBloc extends Bloc<EstadisticaEvent, EstadisticaState> {
       emit(EstadisticaLoaded(resp.info!));
     } else {
       emit(EstadisticaError(resp.message));
+      emit(EstadisticaLoaded(Estadistica.initial()));
     }
   }
 }

@@ -11,9 +11,7 @@ class AuthLogin extends AuthEvent {
   final String usuario;
   final String password;
 
-  const AuthLogin({required String usuario, required String password})
-      : this.usuario = usuario,
-        this.password = password;
+  const AuthLogin({required this.usuario, required this.password});
 
   @override
   List<Object> get props => [usuario, password];
@@ -25,5 +23,5 @@ class AuthLogout extends AuthEvent {
   const AuthLogout(this.logged);
 
   @override
-  List<Object> get props => [this.logged];
+  List<Object> get props => [logged];
 }

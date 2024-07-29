@@ -21,6 +21,16 @@ class Estadistica {
     required this.cobrado,
   });
 
+  factory Estadistica.initial() => Estadistica(
+      idProgramacionJuego: 0,
+      idVendedor: 0,
+      idSucursal: 0,
+      totalCartones: 0,
+      cartonesVendidos: 0,
+      cantidadVentas: 0,
+      totalVentas: 0,
+      cobrado: false);
+
   factory Estadistica.fromJson(Map<String, dynamic> json) {
     var serializer = const JsonSerializer();
     return Estadistica(

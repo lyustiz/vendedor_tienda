@@ -191,7 +191,7 @@ class CartonMultipleListScreen extends StatelessWidget {
           bottom: 15,
           right: 6,
           child: FloatingActionButton(
-            onPressed: () => {seleccionarCartones(context, promociones)},
+            onPressed: () => {seleccionarCartones(context, promociones, juego)},
             backgroundColor: Colors.green,
             tooltip: 'Seleccionar',
             elevation: 15,
@@ -272,7 +272,19 @@ class CartonMultipleListScreen extends StatelessWidget {
     );
   }
 
-  void seleccionarCartones(BuildContext context, List<Promocion> promociones) {
+  void seleccionarCartones(
+      BuildContext context, List<Promocion> promociones, Juego juego) {
+    if (juego.isCerrado()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          Msg.appMessage(context, 'warning', 'El Juego esta Cerrado'));
+      return;
+    }
+    if (juego.isCobrado()) {
+      ScaffoldMessenger.of(context).showSnackBar(Msg.appMessage(
+          context, 'warning', 'Ya se ejecuto el cobro del Vendedor'));
+      return;
+    }
+
     var seleccionadas = promociones.where((p) => p.isSelected).toList();
     var bstate = context.read<BloqueoCartonesBloc>().state;
 

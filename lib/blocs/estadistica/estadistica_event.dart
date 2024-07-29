@@ -10,7 +10,7 @@ abstract class EstadisticaEvent extends Equatable {
 class GetEstadistica extends EstadisticaEvent {
   final int idProgramacionJuego;
 
-  GetEstadistica(this.idProgramacionJuego);
+  const GetEstadistica(this.idProgramacionJuego);
 
   @override
   List<Object> get props => [idProgramacionJuego];

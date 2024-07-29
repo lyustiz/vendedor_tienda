@@ -10,17 +10,18 @@ import 'package:vendedor_tienda/utils/route_helper.dart';
 import 'package:vendedor_tienda/widgets/layout/app_scaffold.dart';
 import 'package:vendedor_tienda/widgets/layout/app_title_bar_variant.dart';
 import 'package:vendedor_tienda/widgets/menus/app_menu.dart';
-import 'package:vendedor_tienda/utils/format/format_data.dart' as Fd;
+import 'package:vendedor_tienda/utils/format/format_data.dart' as fd;
+import 'package:vendedor_tienda/widgets/layout/app_message.dart' as msg;
 
 // ignore: must_be_immutable
 class EstadisticaScreen extends StatelessWidget {
   EstadisticaScreen({super.key});
-  late Fd.FormatLocale fL;
+  late fd.FormatLocale fL;
 
   @override
   Widget build(BuildContext context) {
     Juego juego = context.read<ItemsBloc>().state.juegoSelected;
-    fL = Fd.FormatLocale(locale: juego.moneda);
+    fL = fd.FormatLocale(locale: juego.moneda);
     return BlocProvider(
       create: (context) => EstadisticaBloc(),
       child: AppScaffold(
@@ -65,6 +66,15 @@ class EstadisticaScreen extends StatelessWidget {
                             color: Theme.of(context).colorScheme.primary)),
                   ),
                   BlocBuilder<EstadisticaBloc, EstadisticaState>(
+                    buildWhen: (previous, current) {
+                      if (current is EstadisticaError) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            msg.appMessage(context, 'error', current.error));
+                        return false;
+                      }
+
+                      return true;
+                    },
                     builder: (context, state) {
                       if (state is EstadisticaInitial) {
                         context
@@ -205,13 +215,12 @@ class EstadisticaScreen extends StatelessWidget {
           const SizedBox(
             height: 15,
           ),
-          Container(
-              child: Text(
+          Text(
             title,
             textAlign: TextAlign.center,
             style: TextStyle(
                 fontSize: 18, color: Theme.of(context).colorScheme.secondary),
-          )),
+          ),
         ],
       ),
     );
